@@ -1,5 +1,13 @@
 <resources>
     <string name="app_name">Test Kotlin</string>
-    <string name="text_intro">What\'s the weather like \?</string>
-    <string name="edit_city">Enter a city</string>
+    <string name="today">TODAY</string>
+    <string name="sunrise"> </string>
+    <string name="sunset"> </string>
+    <string name="now">NOW</string>
+    <string name="clouds">Clouds : </string>
+    <string name="wind">Wind : </string>
+    <string name="pressure">Pressure : </string>
+    <string name="humidity">Humidity : </string>
+
+    <string name="url_sunrise">"https://openclipart.org/image/2400px/svg_to_png/233791/Sunrise-Icon.png"</string>
 </resources>
