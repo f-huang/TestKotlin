@@ -58,14 +58,14 @@ class MainActivity : AppCompatActivity() {
                 sunrise.append(apiRet.getSys().getSunrise())
                 sunset.append(apiRet.getSys().getSunset())
 
-                clouds.append(apiRet.getClouds().getStrAll())
+                clouds.append(apiRet.getClouds().getAll())
                 wind.append(apiRet.getWind().convertSpeed("km/h"))
-                humidity.append(apiRet.getMain().getStrHumidity())
+                humidity.append(apiRet.getMain().getHumidity())
             }
 
             override fun failure(error: RetrofitError) {
                 negative_reponse.visibility = 1
-                negative_reponse.text = String.format("Error at : %s\nResponded with : %s\nMessage :%s\n%s",
+                negative_reponse.text = String.format("Error at : %s\nResponded with : %s\nMessage : %s\n%s",
                         error.url, error.response, error.message, error.body)
             }
         })

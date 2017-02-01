@@ -1,7 +1,8 @@
 <resources>
+
     <string name="app_name">Test Kotlin</string>
-    <string name="today">TODAY</string>
-    <string name="now">NOW</string>
+    <string name="today"><b>Today</b></string>
+    <string name="now"><b>Now</b></string>
     <string name="clouds">Clouds : </string>
     <string name="wind">Wind : </string>
     <string name="pressure">Pressure : </string>

@@ -2,46 +2,43 @@ package Model
 
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.List;
 
 class apiCurrentWeather {
 
-    private var main: Main = Main()
-    private var wind: Wind = Wind()
-    private var clouds: Clouds = Clouds()
-    private var sys: Sys = Sys()
+    private var main = Main()
+    private var wind = Wind()
+    private var clouds = Clouds()
+    private var sys = Sys()
 
     private var weather = emptyList<Weather>()
 
-    private var name: String = ""
+    private var name = ""
 
-    fun getMain(): Main = main
-    fun getWind(): Wind = wind
-    fun getClouds(): Clouds = clouds
-    fun getSys(): Sys = sys
-    fun getWeather(): List<Weather> = weather
-    fun getName(): String = name
+    fun getMain() = main
+    fun getWind() = wind
+    fun getClouds() = clouds
+    fun getSys() = sys
+    fun getWeather() = weather
+    fun getName() = name
 
     class Clouds {
-        private var all : Int = 0
+        private var all = 0
 
-        fun getStrAll(): String = all.toString() + "%"
+        fun getAll() = all.toString() + "%"
     }
 
     class Main {
-       private var temp: Double = 0.0
-       private var humidity: Int = 0
+        private var temp = 0.0
+        private var humidity = 0
 
-       fun getTemp(): Double = temp
-        fun getStrHumidity(): String = humidity.toString() + "%"
+        fun getTemp(): Double = temp
+        fun getHumidity() = humidity.toString() + "%"
     }
 
     class Sys {
         private var sunrise: Long = 0
         private var sunset: Long = 0
-        private var country: String = ""
-
-        fun getCountry() = country
+        private var country = ""
 
         private fun timestampToHour(timestamp: Long, format: String): String {
             val dateFormat = SimpleDateFormat(format, Locale.FRANCE)
@@ -50,13 +47,14 @@ class apiCurrentWeather {
             return dateFormat.format(timestamp * 1000)
         }
 
-        fun getSunrise(): String = timestampToHour(sunrise, "h:mm a")
-        fun getSunset(): String = timestampToHour(sunset, "h:mm a")
+        fun getSunrise() = timestampToHour(sunrise, "h:mm a")
+        fun getSunset() = timestampToHour(sunset, "h:mm a")
+        fun getCountry() = country
 
     }
 
     class Weather {
-        private var main: String = ""
+        private var main = ""
 
         fun getMain() = main
     }
