@@ -1,7 +1,8 @@
 package Model
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
 class apiCurrentWeather {
 

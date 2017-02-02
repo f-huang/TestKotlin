@@ -18,24 +18,21 @@ import android.widget.ImageView
 
 class MainActivity : AppCompatActivity() {
 
-    val API_URL = "http://api.openweathermap.org/data/2.5/"
-    val API_KEY = "727dc3e5402d652b80c84b707b88913f"
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-
+        val API_URL = "http://api.openweathermap.org/data/2.5/"
+        val API_KEY = "727dc3e5402d652b80c84b707b88913f"
         val locality: String = "2988507"
         val temp_units: String = "Metric"
 
         val restAdapter = RestAdapter.Builder().setEndpoint(API_URL).build()
         val apiUrl = restAdapter.create(apiUrl::class.java)
 
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
         apiUrl.getFeed(locality, temp_units, API_KEY, object : Callback<apiCurrentWeather> {
             override fun success(apiRet: apiCurrentWeather, response: Response) {
-                positive_response.visibility = 1
-
                 val images = mapOf<ImageView, String>(
                         sunrise_img to "https://openclipart.org/image/2400px/svg_to_png/233791/Sunrise-Icon.png",
                         sunset_img to "http://image.shutterstock.com/z/stock-vector-sunset-icon-vector-2551079.jpg",
@@ -51,6 +48,8 @@ class MainActivity : AppCompatActivity() {
                             .into(view)
                 }
 
+                positive_response.visibility = 1
+
                 city_name.text = String.format("%s, %s", apiRet.getName(), apiRet.getSys().getCountry())
                 main_weather.text = apiRet.getWeather()[0].getMain()
                 temp.text = String.format("%sº", apiRet.getMain().getTemp().toString())
@@ -64,8 +63,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun failure(error: RetrofitError) {
-                negative_reponse.visibility = 1
-                negative_reponse.text = String.format("Error at : %s\nResponded with : %s\nMessage : %s\n%s",
+                negative_response.visibility = 1
+                negative_response.text = String.format("Error at : %s\nResponded with : %s\nMessage : %s\n%s",
                         error.url, error.response, error.message, error.body)
             }
         })
