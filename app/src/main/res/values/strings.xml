@@ -8,4 +8,7 @@
     <string name="pressure">Pressure : </string>
     <string name="humidity">Humidity : </string>
 
+    <string name="api_url_weather">http://api.openweathermap.org/data/2.5/</string>
+    <string name="api_key_weather">727dc3e5402d652b80c84b707b88913f</string>
+
 </resources>

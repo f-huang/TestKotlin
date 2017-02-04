@@ -1,72 +1,71 @@
 package test.testkotlin
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import com.bumptech.glide.Glide
-
-import kotlinx.android.synthetic.main.activity_main.*
-
-import retrofit.Callback
-import retrofit.RestAdapter
-import retrofit.RetrofitError
-import retrofit.client.Response
-
-import API.apiUrl
-import Model.apiCurrentWeather
+import android.support.v7.app.AppCompatActivity
+import android.view.View
 import android.widget.ImageView
-
+import com.bumptech.glide.Glide
+import kotlinx.android.synthetic.main.activity_main.*
+import test.testkotlin.network.Api
+import test.testkotlin.network.business.City
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        val API_URL = "http://api.openweathermap.org/data/2.5/"
-        val API_KEY = "727dc3e5402d652b80c84b707b88913f"
-        val locality: String = "2988507"
-        val temp_units: String = "Metric"
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
 
-        val restAdapter = RestAdapter.Builder().setEndpoint(API_URL).build()
-        val apiUrl = restAdapter.create(apiUrl::class.java)
+		Api.weather.forCity("2988507", "Metric", getString(R.string.api_key_weather)).enqueue(
+			success = { response ->
+				updateUiSuccess(response.body())
+			},
+			localFailure = {
+				updateUiError()
+			},
+			remoteFailure = {
+				updateUiError()
+			}
+		)
+	}
 
+	fun updateUiSuccess(city: City) {
+		val images = mapOf<ImageView, String>(
+			sunrise_img to "https://openclipart.org/image/2400px/svg_to_png/233791/Sunrise-Icon.png",
+			sunset_img to "http://image.shutterstock.com/z/stock-vector-sunset-icon-vector-2551079.jpg",
+			clouds_img to "https://d1yn1kh78jj1rr.cloudfront.net/preview/cloud-icon_fkQZ0V_u_M.jpg",
+			wind_img to "https://maxcdn.icons8.com/Share/icon/Transport//windsock1600.png",
+			humidity_img to "http://avtech.com/images/home/icons/Icon_Pool.png"
+		)
 
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+		for ((view, url) in images) {
+			Glide.with(applicationContext)
+				.load(url)
+				.override(210, 210)
+				.into(view)
+		}
 
-        apiUrl.getFeed(locality, temp_units, API_KEY, object : Callback<apiCurrentWeather> {
-            override fun success(apiRet: apiCurrentWeather, response: Response) {
-                val images = mapOf<ImageView, String>(
-                        sunrise_img to "https://openclipart.org/image/2400px/svg_to_png/233791/Sunrise-Icon.png",
-                        sunset_img to "http://image.shutterstock.com/z/stock-vector-sunset-icon-vector-2551079.jpg",
-                        clouds_img to "https://d1yn1kh78jj1rr.cloudfront.net/preview/cloud-icon_fkQZ0V_u_M.jpg",
-                        wind_img to "https://maxcdn.icons8.com/Share/icon/Transport//windsock1600.png",
-                        humidity_img to "http://avtech.com/images/home/icons/Icon_Pool.png"
-                )
+		positive_response.visibility = View.VISIBLE
 
-                for ((view, url) in images) {
-                    Glide.with(applicationContext)
-                            .load(url)
-                            .override(210, 210)
-                            .into(view)
-                }
+		city_name.text = String.format("%s, %s", city.name, city.sys.country)
+		main_weather.text = city.weather.firstOrNull()?.main
+		temp.text = String.format("%sº", city.main.temperature)
 
-                positive_response.visibility = 1
+		sunrise.append(timestampToHour(city.sys.sunrise, "h:mm a"))
+		sunset.append(timestampToHour(city.sys.sunset, "h:mm a"))
 
-                city_name.text = String.format("%s, %s", apiRet.getName(), apiRet.getSys().getCountry())
-                main_weather.text = apiRet.getWeather()[0].getMain()
-                temp.text = String.format("%sº", apiRet.getMain().getTemp().toString())
+		clouds.append("${city.clouds.all}%")
+	}
 
-                sunrise.append(apiRet.getSys().getSunrise())
-                sunset.append(apiRet.getSys().getSunset())
+	fun updateUiError() {
+		negative_response.visibility = View.VISIBLE
+		negative_response.text = "Error"
+	}
+}
 
-                clouds.append(apiRet.getClouds().getAll())
-                wind.append(apiRet.getWind().convertSpeed("km/h"))
-                humidity.append(apiRet.getMain().getHumidity())
-            }
-
-            override fun failure(error: RetrofitError) {
-                negative_response.visibility = 1
-                negative_response.text = String.format("Error at : %s\nResponded with : %s\nMessage : %s\n%s",
-                        error.url, error.response, error.message, error.body)
-            }
-        })
-    }
+private fun timestampToHour(timestamp: Long, format: String): String {
+	val dateFormat = SimpleDateFormat(format, Locale.FRANCE)
+	dateFormat.timeZone = TimeZone.getTimeZone("GMT")
+	return dateFormat.format(timestamp * 1000)
 }
